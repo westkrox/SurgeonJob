@@ -57,6 +57,11 @@ class ClinicsScraper(BaseScraper):
                     continue
 
                 soup = BeautifulSoup(r.text, "lxml")
+                all_links = soup.select("a[href]")
+                matched = [a for a in all_links if any(m in a.get("href", "") for m in site["job_href_markers"])]
+                print(f"[Clinics/{site['name']}] {path} -> HTTP {r.status_code}, {len(r.text)} bytes, "
+                      f"{len(all_links)} total links, {len(matched)} matching job-href pattern")
+                kept = 0
 
                 for a in soup.select("a[href]"):
                     href = a.get("href", "")
@@ -95,5 +100,8 @@ class ClinicsScraper(BaseScraper):
                         "level": extract_level(combined),
                         "description": snippet,
                     })
+                    kept += 1
+
+                print(f"[Clinics/{site['name']}] {path} -> kept {kept} after relevance filter")
 
         return results

@@ -48,6 +48,8 @@ class AerztestellenScraper(BaseScraper):
 
             soup = BeautifulSoup(r.text, "lxml")
             links = soup.select('a[href*="/de/stelle/"]')
+            print(f"[Aerztestellen] {path} -> HTTP {r.status_code}, {len(r.text)} bytes, {len(links)} job links found")
+            kept = 0
 
             for a in links:
                 href = a.get("href", "")
@@ -83,5 +85,8 @@ class AerztestellenScraper(BaseScraper):
                     "level": extract_level(combined),
                     "description": snippet,
                 })
+                kept += 1
+
+            print(f"[Aerztestellen] {path} -> kept {kept} after relevance filter")
 
         return results

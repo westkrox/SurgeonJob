@@ -49,7 +49,7 @@ class SearchScraper(BaseScraper):
 
         for query in QUERIES:
             try:
-                r = self.fetch(DDG_URL, params={"q": query, "kl": "de-de"})
+                r = self.fetch(DDG_URL, params={"q": query, "kl": "de-de"}, timeout=6)
                 soup = BeautifulSoup(r.text, "lxml")
                 for result in soup.select(".result"):
                     a = result.select_one(".result__a")
@@ -82,8 +82,9 @@ class SearchScraper(BaseScraper):
                         "level": extract_level(combined),
                         "description": desc,
                     })
-                time.sleep(2)
+                time.sleep(1)
             except Exception as e:
                 print(f"[Search] error on '{query}': {e}")
+                continue
 
         return results
