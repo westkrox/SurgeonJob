@@ -61,6 +61,8 @@ class ClinicsScraper(BaseScraper):
                 matched = [a for a in all_links if any(m in a.get("href", "") for m in site["job_href_markers"])]
                 print(f"[Clinics/{site['name']}] {path} -> HTTP {r.status_code}, {len(r.text)} bytes, "
                       f"{len(all_links)} total links, {len(matched)} matching job-href pattern")
+                sample_titles = [a.get_text(strip=True)[:80] for a in matched[:8]]
+                print(f"[Clinics/{site['name']}] {path} -> sample titles: {sample_titles}")
                 kept = 0
 
                 for a in soup.select("a[href]"):

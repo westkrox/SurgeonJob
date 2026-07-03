@@ -49,6 +49,11 @@ class AerztestellenScraper(BaseScraper):
             soup = BeautifulSoup(r.text, "lxml")
             links = soup.select('a[href*="/de/stelle/"]')
             print(f"[Aerztestellen] {path} -> HTTP {r.status_code}, {len(r.text)} bytes, {len(links)} job links found")
+            if len(links) == 0:
+                title_tag = soup.find("title")
+                body_text = soup.get_text(" ", strip=True)[:200]
+                print(f"[Aerztestellen] {path} -> page <title>: {title_tag.get_text() if title_tag else 'none'}")
+                print(f"[Aerztestellen] {path} -> body preview: {body_text}")
             kept = 0
 
             for a in links:
