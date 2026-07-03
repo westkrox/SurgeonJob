@@ -61,11 +61,12 @@ def run_all_scrapers():
 
     _scrape_status["running"] = True
     _scrape_status["progress"] = "Starting..."
-    log_id = db.log_scrape_start()
     total_found = 0
     total_new = 0
+    log_id = None
 
     try:
+        log_id = db.log_scrape_start()
         for ScraperClass in ALL_SCRAPERS:
             scraper = ScraperClass()
             _scrape_status["progress"] = f"Scraping {scraper.name}..."
@@ -86,7 +87,9 @@ def run_all_scrapers():
         _scrape_status["progress"] = f"Done. Found {total_found} total, {total_new} new."
         print(f"[Scraper] Finished. {total_found} found, {total_new} new.")
     except Exception as e:
-        db.log_scrape_finish(log_id, total_found, total_new, error=str(e))
+        print(f"[Scraper] run_all_scrapers crashed: {e}")
+        if log_id is not None:
+            db.log_scrape_finish(log_id, total_found, total_new, error=str(e))
         _scrape_status["progress"] = f"Error: {e}"
     finally:
         _scrape_status["running"] = False
