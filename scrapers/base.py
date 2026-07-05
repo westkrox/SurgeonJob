@@ -14,7 +14,7 @@ HEADERS = {
 class BaseScraper(ABC):
     name = "base"
 
-    def fetch(self, url, params=None, timeout=15):
+    def fetch(self, url, params=None, timeout=8):
         r = requests.get(url, params=params, headers=HEADERS, timeout=timeout)
         r.raise_for_status()
         return r
