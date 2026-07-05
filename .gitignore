@@ -1,4 +1,7 @@
 __pycache__/
 *.pyc
 opportunities.db
+opportunities_v2.db
+opportunities_v2.db-wal
+opportunities_v2.db-shm
 .env

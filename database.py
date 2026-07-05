@@ -3,15 +3,22 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-DB_PATH = Path(__file__).parent / "opportunities.db"
+# Renamed from opportunities.db: that file was switched into WAL mode by a
+# previous version of this code, and WAL mode is stored in the database file
+# itself (not just per-connection), so it kept hanging on Render's disk even
+# after the PRAGMA was removed here. Nothing of value had been saved into it
+# yet, so starting fresh under a new filename sidesteps the poisoned file
+# instead of trying to repair it without shell access.
+DB_PATH = Path(__file__).parent / "opportunities_v2.db"
 
 
 def get_connection():
     conn = sqlite3.connect(DB_PATH, timeout=30)
     conn.row_factory = sqlite3.Row
-    # WAL lets the background scraper write while the web process reads,
-    # instead of one side hitting "database is locked".
-    conn.execute("PRAGMA journal_mode=WAL")
+    # WAL mode was tried here to avoid "database is locked" errors, but its
+    # shared-memory-mapped -wal/-shm files hang indefinitely on Render's disk.
+    # With a single gunicorn worker, busy_timeout alone is enough to
+    # serialize the threads' connections safely.
     conn.execute("PRAGMA busy_timeout=30000")
     return conn
 
