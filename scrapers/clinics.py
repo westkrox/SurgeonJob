@@ -26,14 +26,8 @@ SITES = [
         "job_href_markers": ["/stellenangebote/detail/", "/job-vacancies/detail/"],
         "hint": "berlin",
     },
-    {
-        "name": "ukb_bgklinik",
-        "base": "https://www.bg-kliniken.de",
-        "listing_paths": ["/unfallkrankenhaus-berlin/karriere/offene-stellen/"],
-        "job_href_markers": ["/karriere/offene-stellen/"],
-        "exclude_exact_paths": ["/unfallkrankenhaus-berlin/karriere/offene-stellen/"],
-        "hint": "unfallchirurgie unfallkrankenhaus berlin trauma",
-    },
+    # BG Klinikum Unfallkrankenhaus Berlin is handled by scrapers/bg_kliniken.py
+    # instead - its listings are loaded via a JS widget, not static HTML.
 ]
 
 MIN_TITLE_LEN = 8
