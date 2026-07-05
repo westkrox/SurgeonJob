@@ -10,3 +10,5 @@ services:
         sync: false
       - key: SCRAPE_TOKEN
         sync: false
+      - key: PYTHONUNBUFFERED
+        value: "1"
