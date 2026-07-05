@@ -101,13 +101,11 @@ def get_opportunities(status=None, source=None, berlin_only=False,
     if berlin_only:
         query += " AND berlin_area = 1"
     if specialty:
-        for s in specialty:
-            query += " AND specialty LIKE ?"
-            params.append(f"%{s}%")
+        query += " AND (" + " OR ".join(["specialty LIKE ?"] * len(specialty)) + ")"
+        params.extend(f"%{s}%" for s in specialty)
     if level:
-        for lv in level:
-            query += " AND level LIKE ?"
-            params.append(f"%{lv}%")
+        query += " AND (" + " OR ".join(["level LIKE ?"] * len(level)) + ")"
+        params.extend(f"%{lv}%" for lv in level)
     if search:
         query += " AND (title LIKE ? OR description LIKE ? OR employer LIKE ?)"
         params.extend([f"%{search}%", f"%{search}%", f"%{search}%"])
